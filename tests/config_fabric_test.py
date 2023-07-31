@@ -103,3 +103,25 @@ class TestConfigFabric(object):
         result = self.basic_check("port", ["monitor", "state", "disable"], ctx)
         expect_result = 0
         assert operator.eq(result.exit_code, expect_result)
+
+class TestMultiAsicConfigFabric(object):
+    @classmethod
+    def setup_class(cls):
+        print("SETUP")
+        os.environ["PATH"] += os.pathsep + scripts_path
+        os.environ["UTILITIES_UNIT_TESTING"] = "2"
+        os.environ["UTILITIES_UNIT_TESTING_TOPOLOGY"] = "multi_asic"
+
+    def basic_check(self, command_name, para_list, ctx):
+        # This function issues command of "config fabric xxxx",
+        # and returns the result of the command.
+        runner = CliRunner()
+        result = runner.invoke(config.config.commands["fabric"].commands[command_name], para_list, obj = ctx)
+        print(result.output)
+        return result
+
+    def test_multi_config_fabric_monitor_state(self, ctx):
+        result = self.basic_check("port", ["monitor", "state", "disable"], ctx)
+        expect_result = 0
+        assert operator.eq(result.exit_code, expect_result)
+
